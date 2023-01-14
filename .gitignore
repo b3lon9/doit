@@ -87,3 +87,10 @@ lint/tmp/
 # lint/reports/
 
 *.bat
+
+test/
+*.webp
+xml/
+androidTest/
+mipmap*/
+ic_launcher*
