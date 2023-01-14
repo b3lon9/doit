@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">uri</string>
+
+    <!--Main Button-->
+    <string name="btn_naver">네이버 접속</string>
+    <string name="btn_phone">전화연결</string>
+</resources>
