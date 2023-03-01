@@ -2,17 +2,17 @@ package com.b3lon9.controlmaster;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
 import com.b3lon9.controlmaster.constant.Constant;
 import com.b3lon9.controlmaster.databinding.ActivityMainBinding;
-import com.b3lon9.controlmaster.listener.LightButton;
+import com.b3lon9.controlmaster.listener.LevelListener;
 import com.b3lon9.controlmaster.listener.LightLevelListener;
 
 public class MainActivity extends Activity {
-
     private ActivityMainBinding binding;
 
     @Override
@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        finish();
     }
 
     @Override
@@ -46,11 +47,18 @@ public class MainActivity extends Activity {
         layoutParams.width = (int)(getResources().getDisplayMetrics().widthPixels * 0.8);
         binding.seekbarLight.setLayoutParams(layoutParams);
 
-        LightLevelListener lightLevelListener = new LightLevelListener(binding.seekbarLight);
+        binding.setLightlevel(Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128));
 
-        new LightButton(this, binding.btnLightMin, Constant.BRIGHT_LEVEL.MIN, lightLevelListener);
-        new LightButton(this, binding.btnLightMax, Constant.BRIGHT_LEVEL.MAX, lightLevelListener);
-
-        binding.seekbarLight.setOnSeekBarChangeListener(lightLevelListener);
+        binding.btnLightMin.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MIN));
+        binding.btnLightMax.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MAX));
+        binding.seekbarLight.setOnSeekBarChangeListener(new LightLevelListener(levelListener));
     }
+
+    private final LevelListener levelListener = new LevelListener() {
+        @Override
+        public void onLightLevel(int level) {
+            Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, level);
+            binding.seekbarLight.setProgress(level);
+        }
+    };
 }

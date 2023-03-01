@@ -4,20 +4,15 @@ import android.util.Log;
 import android.widget.SeekBar;
 
 public class LightLevelListener implements SeekBar.OnSeekBarChangeListener {
-    private SeekBar seekBar;
-    public LightLevelListener(SeekBar seekBar) {
-        this.seekBar = seekBar;
-    }
-
-    public void setLightLevel(int level) {
-        Log.d("neander", "light level : " + level);
-        this.seekBar.setProgress(level);
+    private LevelListener levelListener;
+    public LightLevelListener(LevelListener listener) {
+        this.levelListener = listener;
     }
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (b) {
-
+            this.levelListener.onLightLevel(i);
         }
     }
 
