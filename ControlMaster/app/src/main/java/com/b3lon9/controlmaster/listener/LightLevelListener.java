@@ -1,10 +1,9 @@
 package com.b3lon9.controlmaster.listener;
 
-import android.util.Log;
 import android.widget.SeekBar;
 
 public class LightLevelListener implements SeekBar.OnSeekBarChangeListener {
-    private LevelListener levelListener;
+    private final LevelListener levelListener;
     public LightLevelListener(LevelListener listener) {
         this.levelListener = listener;
     }
