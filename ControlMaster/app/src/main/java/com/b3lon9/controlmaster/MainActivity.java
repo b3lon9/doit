@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
@@ -16,6 +15,7 @@ import com.b3lon9.controlmaster.constant.Constant;
 import com.b3lon9.controlmaster.databinding.ActivityMainBinding;
 import com.b3lon9.controlmaster.listener.LevelListener;
 import com.b3lon9.controlmaster.listener.LightLevelListener;
+import com.b3lon9.controlmaster.work.LightAutoTask;
 
 public class MainActivity extends Activity {
     private final String TAG = "neander";
@@ -53,14 +53,14 @@ public class MainActivity extends Activity {
             Log.i(TAG, String.format("PermissionCheck Build.VERSION.SDK_INT:{%d} >= Build.VERSION_CODES.M:{%d}", Build.VERSION.SDK_INT, Build.VERSION_CODES.M));
             if (Settings.System.canWrite(this)) {
                 Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
-            } else {
-                // 권한설정
+            } else {                // 권한설정
                 Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
                 String packageName = "package:" + getPackageName();
                 Log.i(TAG, packageName);
                 intent.setData(Uri.parse(packageName));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+
             }
         }
     }
@@ -72,9 +72,10 @@ public class MainActivity extends Activity {
         binding.seekbarLight.setLayoutParams(layoutParams);
         binding.seekbarLight.setMax(Constant.BRIGHT_LEVEL.MAX);
 
-        binding.setLightlevel(Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, 128));
+        binding.setLightlevel(Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, -1));
 
         binding.btnLightMin.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MIN));
+        binding.btnLightAuto.setOnClickListener(v -> new LightAutoTask(this, levelListener));
         binding.btnLightMax.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MAX));
         binding.seekbarLight.setOnSeekBarChangeListener(new LightLevelListener(levelListener));
     }
@@ -84,7 +85,7 @@ public class MainActivity extends Activity {
         @Override
         public void onLightLevel(int level) {
             Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, level);
-            binding.seekbarLight.setProgress(level);
+            binding.setLightlevel(level);
         }
     };
 }
