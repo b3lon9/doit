@@ -73,10 +73,15 @@ public class MainActivity extends Activity {
         binding.seekbarLight.setLayoutParams(layoutParams);
         binding.seekbarLight.setMax(Constant.BRIGHT_LEVEL.MAX);
 
+        // init bright progress level
         binding.setLightlevel(Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, -1));
 
+        // auto bright setting
+        LightAutoTask autoTask = new LightAutoTask(this, levelListener);
+
+        // binding event listener
         binding.btnLightMin.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MIN));
-        binding.btnLightAuto.setOnClickListener(v -> new LightAutoTask(this, levelListener));
+        binding.btnLightAuto.setOnClickListener(v -> autoTask.work());
         binding.btnLightMax.setOnClickListener(v -> levelListener.onLightLevel(Constant.BRIGHT_LEVEL.MAX));
         binding.seekbarLight.setOnSeekBarChangeListener(new LightLevelListener(levelListener));
     }
