@@ -14,17 +14,19 @@
         android:layout_height="wrap_content"
         android:padding="15dp"
         android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/beige_background">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp">
 
             <Button
                 android:id="@+id/btn_light_min"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="테스트1"
+                android:text="@string/light_button_min"
+                android:background="@drawable/beige_button_selector"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -32,7 +34,8 @@
                 android:id="@+id/btn_light_auto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="테스트2"
+                android:background="@drawable/beige_button_selector"
+                android:text="@string/light_button_auto"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
@@ -41,7 +44,8 @@
                 android:id="@+id/btn_light_max"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="테스트3"
+                android:background="@drawable/beige_button_selector"
+                android:text="@string/light_button_max"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -51,6 +55,7 @@
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:progress="@{lightlevel}"
+            android:splitTrack="false"
             android:progressDrawable="@drawable/light_progress"
             android:thumb="@drawable/light_thumb" />
     </LinearLayout>

@@ -40,10 +40,7 @@ public class LightAutoTask {
                         int autoLevel = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
 
 
-                        while (true) {
-                            if (manualLevel != autoLevel || count < 0) {
-                                break;
-                            }
+                        while (manualLevel == autoLevel && count >= 0) {
                             Thread.sleep(50);
                             count--;
                             autoLevel = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);

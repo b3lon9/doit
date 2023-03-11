@@ -9,7 +9,6 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.LinearLayout;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.databinding.DataBindingUtil;
 
 import com.b3lon9.controlmaster.constant.Constant;
