@@ -3,29 +3,24 @@ package com.b3lon9.controlmaster.work;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.provider.Settings;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.b3lon9.controlmaster.listener.LevelListener;
 
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
-import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class LightAutoTask {
     private final LevelListener levelListener;
     private Context mContext;
-    int level = -1;
 
     @SuppressLint("CheckResult")
     public LightAutoTask(Context context, LevelListener levelListener) {
         this.mContext = context;
         this.levelListener = levelListener;
-
-        // Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
-        // Settings.System.getInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, -1)
-
-        // auto
     }
 
     private Callable<Boolean> callable = () -> {
@@ -34,14 +29,33 @@ public class LightAutoTask {
     };
 
     @SuppressLint("CheckResult")
-    public void work() {
-        Observable<Boolean> source = Observable.fromCallable(callable);
-        source.subscribe(result -> {
-            Log.d("neander", "RxJava Result : " + result);
-            if (result) {
-                Observable<Integer> bright = Observable.just(Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, -1));
-                Single.fromObservable(bright).subscribe(levelListener::onLightLevel);
-            }
-        });
+    public void work(int manualLevel) {
+        Observable.fromCallable(callable)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+
+                    if (result) {
+                        int count = 10;
+                        int autoLevel = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+
+
+                        while (true) {
+                            if (manualLevel != autoLevel || count < 0) {
+                                break;
+                            }
+                            Thread.sleep(50);
+                            count--;
+                            autoLevel = Settings.System.getInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS);
+                        }
+
+                        // Manual Mode Setting
+                        Settings.System.putInt(mContext.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+
+                        levelListener.onLightLevel(autoLevel);
+                    } else {
+                        Toast.makeText(mContext, "다시 클릭해주세요", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
